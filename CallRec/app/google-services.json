@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "314571212950",
+    "firebase_url": "https://callrec-be9cd.firebaseio.com",
+    "project_id": "callrec-be9cd",
+    "storage_bucket": "callrec-be9cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314571212950:android:35f08309b0b4126e",
+        "android_client_info": {
+          "package_name": "com.appiness.callrec"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314571212950-8kbp19rkl0sr7s6t520st5sc3a3dic4i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.appiness.callrec",
+            "certificate_hash": "eebebe2731e2c11082b07bbf2558899f75ea3942"
+          }
+        },
+        {
+          "client_id": "314571212950-1b615pp1cvaom7iqn89cqshql2i7of13.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyRvt3w45twhf3Iw2V37wv-dJLViawoFE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314571212950-1b615pp1cvaom7iqn89cqshql2i7of13.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
