@@ -12,8 +12,6 @@ import java.util.List;
 
 public class PhoneStateReceiver  extends BroadcastReceiver {
 
-    static final String TAG="State";
-    static final String TAG1=" Inside State";
     static Boolean recordStarted;
     public static String phoneNumber;
     public static String name;
@@ -31,6 +29,7 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
                 Toast.makeText(context, "Call detected(Incoming/Outgoing) " + state, Toast.LENGTH_SHORT).show();
                 if (extras != null) {
                     if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                        phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                         }
                         else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                         int j = pref.getInt("numOfCalls", 0);
@@ -47,6 +46,7 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
                             List<CallDetails> list = new DatabaseManager(context).getAllDetails();
                             for (CallDetails cd : list) {
                                 String log = "Serial Number : " + cd.getSerial() + " | Phone num : " + cd.getNum() + " | Time : " + cd.getTime1() + " | Date : " + cd.getDate1();
+                               // Log.d("Database ", log);
                             }
 
                             pref.edit().putInt("serialNumData", ++serialNumber).apply();
