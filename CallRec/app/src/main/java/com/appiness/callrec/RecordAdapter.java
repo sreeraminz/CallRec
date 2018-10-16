@@ -44,7 +44,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "Clicked on " + number, Toast.LENGTH_SHORT).show();
                     String path = Environment.getExternalStorageDirectory() + "/My Records/" + dates + "/" + number + "_" + times + ".mp4"  ;
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     File file = new File(path);
@@ -136,4 +135,5 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
             return 2;
         }
     }
+
 }

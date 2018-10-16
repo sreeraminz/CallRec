@@ -3,6 +3,7 @@ package com.appiness.callrec;
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.appiness.callrec.DatabaseHandler.TABLE_RECORD;
 import static com.appiness.callrec.PhoneStateReceiver.phoneNumber;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recycler;
     List<CallDetails> callDetailsList;
     boolean checkResume=false;
+    boolean loading = false;
+    int totalItems = 0;
+    int startLimit =0;
+    int endLimit = 0;
+    int increment = 8;
+    boolean endReached = false;
+    int pageCount=1;
+
 
 
     @Override
@@ -88,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         final SharedPreferences pref1= PreferenceManager.getDefaultSharedPreferences(this);
 
-        SwitchCompat switchCompat = (SwitchCompat) view.findViewById(R.id.switchCheck);
+        SwitchCompat switchCompat = view.findViewById(R.id.switchCheck);
         switchCompat.setChecked(pref1.getBoolean("switchOn",true));
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -110,21 +120,78 @@ public class MainActivity extends AppCompatActivity {
 
     public void setUi()
     {
+        totalItems = new DatabaseManager(this).getCount();
         recycler= findViewById(R.id.recyclerView);
-        callDetailsList=new DatabaseManager(this).getAllDetails();
+
+
+
+        endLimit= endLimit+increment;
+        callDetailsList=new DatabaseManager(this).getFiveItems(startLimit,totalItems);
+
+
 
         for(CallDetails cd:callDetailsList)
         {
             String log="Phone num : "+cd.getNum()+" | Time : "+cd.getTime1()+" | Date : "+cd.getDate1();
         }
 
+
         Collections.reverse(callDetailsList);
         rAdapter=new RecordAdapter(callDetailsList,this);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
+        final LinearLayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
         recycler.setLayoutManager(layoutManager);
         recycler.setItemAnimator(new DefaultItemAnimator());
-        recycler.setAdapter(rAdapter);
 
+        //layoutManager.setReverseLayout(true);
+        //layoutManager.setStackFromEnd(true);
+
+        recycler.setAdapter(rAdapter);
+        Log.d("tag","totalitems"+totalItems);
+        Toast.makeText(MainActivity.this, "page"+pageCount, Toast.LENGTH_SHORT).show();
+        pageCount++;
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                {
+                    if(dy>0)
+                    {
+                        int visibleItemCount = layoutManager.getChildCount();
+                        int totalItemCount = layoutManager.getItemCount();
+                        int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                          if(!endReached) {
+
+                              if ((visibleItemCount + pastVisibleItems) >= totalItemCount
+                                      && pastVisibleItems >= 0) {
+
+                                  getNextListItems();
+                                  Toast.makeText(MainActivity.this, "page"+pageCount, Toast.LENGTH_SHORT).show();
+                                  pageCount++;
+
+
+                              }
+                          }
+
+                    }
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+    }
+
+    private void getNextListItems() {
+
+        startLimit = endLimit;
+        endLimit = endLimit+increment;
+        if(endLimit>= totalItems){
+            endReached = true;
+            endLimit= endLimit-increment;
+            endLimit=endLimit+(totalItems%increment);
+
+        }
+
+        callDetailsList.addAll(new DatabaseManager(this).getFiveItems(startLimit,endLimit));
+        rAdapter.notifyDataSetChanged();
     }
 
 

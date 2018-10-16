@@ -3,30 +3,14 @@ package com.appiness.callrec;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.AudioFormat;
 import android.media.MediaRecorder;
-import android.net.Uri;
-
-import android.os.Environment;
 import android.os.IBinder;
-
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import java.io.File;
 import java.io.IOException;
-import static com.appiness.callrec.PhoneStateReceiver.phoneNumber;
+
 
 public class RecordingService extends Service {
     String SQLiteQuery;
@@ -34,7 +18,6 @@ public class RecordingService extends Service {
     String rec;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReferenceFromUrl("gs://callrec-be9cd.appspot.com");
     private MediaRecorder recorder;
 
     @Override

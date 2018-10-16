@@ -30,15 +30,21 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
                 if (extras != null) {
                     if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                         phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+
+
                         }
                         else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                         int j = pref.getInt("numOfCalls", 0);
                         pref.edit().putInt("numOfCalls", ++j).apply();
-                        phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+
                         if (pref.getInt("numOfCalls", 1) == 1) {
                             Intent reivToServ = new Intent(context, RecordingService.class);
                             reivToServ.putExtra("number", phoneNumber);
                             context.startService(reivToServ);
+
+                            Intent intentnumber = new Intent(context,UploadingService.class);
+                            intentnumber.putExtra("datanumber", phoneNumber);
+                            context.startService(intentnumber);
 
                             int serialNumber = pref.getInt("serialNumData", 1);
                             new DatabaseManager(context).addCallDetails(new CallDetails(serialNumber, phoneNumber, new CommonMethods().getTIme(), new CommonMethods().getDate()));
@@ -46,7 +52,6 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
                             List<CallDetails> list = new DatabaseManager(context).getAllDetails();
                             for (CallDetails cd : list) {
                                 String log = "Serial Number : " + cd.getSerial() + " | Phone num : " + cd.getNum() + " | Time : " + cd.getTime1() + " | Date : " + cd.getDate1();
-                               // Log.d("Database ", log);
                             }
 
                             pref.edit().putInt("serialNumData", ++serialNumber).apply();
@@ -72,7 +77,5 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
 
         }
         }
-
-
 
 }

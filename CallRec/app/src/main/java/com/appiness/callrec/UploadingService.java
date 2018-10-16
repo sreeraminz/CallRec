@@ -16,25 +16,27 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.File;
+import static com.appiness.callrec.PhoneStateReceiver.phoneNumber;
+
 
 public class UploadingService extends Service {
+
 
     SQLiteDatabase SQLITEDATABASE;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReferenceFromUrl("gs://callrec-be9cd.appspot.com");
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        String phoneNumber = intent.getStringExtra("number");
+
         String time = new CommonMethods().getTIme();
+        String n=  new DatabaseManager(this).getNumber(time);
+
+        //Toast.makeText(this, "UpP"+n, Toast.LENGTH_SHORT).show();
 
         SQLITEDATABASE = openOrCreateDatabase("DBVoice", Context.MODE_PRIVATE, null);
+
 
         Cursor cursor = SQLITEDATABASE.rawQuery("SELECT * FROM TableVoice",null);
         if(cursor.moveToFirst()) {
@@ -45,28 +47,26 @@ public class UploadingService extends Service {
                 Log.d("======UploadService====", filepath.getPath());
                 Log.d("======UploadService2===", string);
 
-                try{
-                    Log.d("======number===", phoneNumber);
-                   }
-                catch (Exception ee) {
-                    ee.printStackTrace();
-                }
 
-                StorageReference childRef = storageRef.child(phoneNumber + "__" + time + "voice");
+                StorageReference childRef = storageRef.child(phoneNumber+ "__" + time);
+
+
                 UploadTask uploadTask = childRef.putFile(filepath);
+
                 uploadTask
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(UploadingService.this, "Done", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UploadingService.this, "done", Toast.LENGTH_SHORT).show();
                                 SQLITEDATABASE.delete("TableVoice", "rec" + " = ?", new String[] { string });
 
+                                //Toast.makeText(UploadingService.this, "N"+phoneNumber, Toast.LENGTH_SHORT).show();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(UploadingService.this, "Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UploadingService.this, "failed", Toast.LENGTH_SHORT).show();
                             }
                         });
             }while(cursor.moveToNext());
