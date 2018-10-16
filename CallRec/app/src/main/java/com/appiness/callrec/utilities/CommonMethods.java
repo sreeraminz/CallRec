@@ -1,4 +1,4 @@
-package com.appiness.callrec;
+package com.appiness.callrec.utilities;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,7 +10,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.Calendar;
 
-class CommonMethods {
+public class CommonMethods {
     final String TAGCM="Inside Service";
     Calendar cal=Calendar.getInstance();
 

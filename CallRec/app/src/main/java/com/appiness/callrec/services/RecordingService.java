@@ -1,4 +1,4 @@
-package com.appiness.callrec;
+package com.appiness.callrec.services;
 
 import android.app.Service;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.appiness.callrec.utilities.CommonMethods;
 import com.google.firebase.storage.FirebaseStorage;
 import java.io.IOException;
 

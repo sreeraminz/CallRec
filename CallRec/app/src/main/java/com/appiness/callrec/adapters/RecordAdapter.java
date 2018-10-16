@@ -1,17 +1,25 @@
-package com.appiness.callrec;
+package com.appiness.callrec.adapters;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.appiness.callrec.BuildConfig;
+import com.appiness.callrec.R;
+import com.appiness.callrec.utilities.CallDetails;
+import com.appiness.callrec.utilities.CommonMethods;
+
 import java.io.File;
 import java.util.List;
 import static android.support.v4.content.FileProvider.getUriForFile;
@@ -30,7 +38,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView number, time, date,name;
+        TextView number, time, date,name, tvDuration;
+        ImageView btnCall;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -38,6 +47,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
             name = itemView.findViewById(R.id.name1);
             number = itemView.findViewById(R.id.num);
             time = itemView.findViewById(R.id.time1);
+            tvDuration = itemView.findViewById(R.id.tvDuration);
+            btnCall = itemView.findViewById(R.id.btnCall);
         }
 
         public void bind(final String dates, final String number, final String times) {
@@ -53,7 +64,15 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
                     pref.edit().putBoolean("pauseStateVLC",true).apply();
                     }
             });
+         btnCall.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Intent i=new Intent(Intent.ACTION_DIAL,Uri.fromParts("tel", number, null));
+                 context.startActivity(i);
+             }
+         });
         }
+
     }
 
     @Override
@@ -78,6 +97,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     @Override
     public void onBindViewHolder(RecordAdapter.MyViewHolder holder, int position) {
 
+        long duration = pref.getLong("duration",0);
         CallDetails cd1 = callDetails.get(position);
         String n=cd1.getNum();
         String name=new CommonMethods().getContactName(n,context);
@@ -88,6 +108,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
                 if(name!=null && !name.equals("")) {
                     holder.name.setText(name);
                     holder.name.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
+                    //holder.tvDuration.setText((int) pref.getLong("duration",00000));
                 }
                 else {
                     holder.name.setText(name2);
@@ -95,6 +116,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
                 }
                 holder.number.setText(callDetails.get(position).getNum());
                 holder.time.setText(callDetails.get(position).getTime1());
+                holder.tvDuration.setText(String.valueOf(duration));
                 break;
             case 2:
                 holder.date.setText(callDetails.get(position).getDate1());
@@ -108,6 +130,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
                 }
                 holder.number.setText(callDetails.get(position).getNum());
                 holder.time.setText(callDetails.get(position).getTime1());
+                holder.tvDuration.setText(String.valueOf(duration));
                 break;
         }
     }

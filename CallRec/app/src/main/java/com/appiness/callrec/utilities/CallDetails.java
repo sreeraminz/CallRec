@@ -1,4 +1,4 @@
-package com.appiness.callrec;
+package com.appiness.callrec.utilities;
 
 public class CallDetails {
     private int serial;

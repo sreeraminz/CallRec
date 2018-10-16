@@ -1,10 +1,8 @@
-package com.appiness.callrec;
+package com.appiness.callrec.activity;
 
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -22,25 +20,18 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.appiness.callrec.utilities.CallDetails;
+import com.appiness.callrec.Database.DatabaseHandler;
+import com.appiness.callrec.Database.DatabaseManager;
+import com.appiness.callrec.R;
+import com.appiness.callrec.adapters.RecordAdapter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.appiness.callrec.DatabaseHandler.TABLE_RECORD;
-import static com.appiness.callrec.PhoneStateReceiver.phoneNumber;
-
 public class MainActivity extends AppCompatActivity {
 
-
-    DatabaseHandler db=new DatabaseHandler(this);
-    final static String TAGMA="Main Activity";
     RecordAdapter rAdapter;
     RecyclerView recycler;
     List<CallDetails> callDetailsList;
@@ -63,12 +54,10 @@ public class MainActivity extends AppCompatActivity {
         pref.edit().putInt("numOfCalls",0).apply();
 
 
-
     }
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("Check", "onResume: ");
         if(checkPermission()) {
             if(checkResume==false) {
                 setUi();
@@ -93,22 +82,17 @@ public class MainActivity extends AppCompatActivity {
     {
         getMenuInflater().inflate(R.menu.mainmenu,menu);
         MenuItem item=menu.findItem(R.id.mySwitch);
-
         View view = getLayoutInflater().inflate(R.layout.switch_layout,null,false) ;
-
         final SharedPreferences pref1= PreferenceManager.getDefaultSharedPreferences(this);
-
         SwitchCompat switchCompat = view.findViewById(R.id.switchCheck);
         switchCompat.setChecked(pref1.getBoolean("switchOn",true));
         switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    Log.d("Switch", "onCheckedChanged: " +isChecked);
                     Toast.makeText(getApplicationContext(), "Call Recorder ON", Toast.LENGTH_LONG).show();
                     pref1.edit().putBoolean("switchOn",isChecked).apply();
                 }else{
-                    Log.d("Switch", "onCheckedChanged: " +isChecked);
                     Toast.makeText(getApplicationContext(), "Call Recorder OFF", Toast.LENGTH_LONG).show();
                     pref1.edit().putBoolean("switchOn",isChecked).apply();
                 }
@@ -122,32 +106,19 @@ public class MainActivity extends AppCompatActivity {
     {
         totalItems = new DatabaseManager(this).getCount();
         recycler= findViewById(R.id.recyclerView);
-
-
-
         endLimit= endLimit+increment;
         callDetailsList=new DatabaseManager(this).getFiveItems(startLimit,totalItems);
-
-
-
         for(CallDetails cd:callDetailsList)
         {
             String log="Phone num : "+cd.getNum()+" | Time : "+cd.getTime1()+" | Date : "+cd.getDate1();
         }
-
 
         Collections.reverse(callDetailsList);
         rAdapter=new RecordAdapter(callDetailsList,this);
         final LinearLayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
         recycler.setLayoutManager(layoutManager);
         recycler.setItemAnimator(new DefaultItemAnimator());
-
-        //layoutManager.setReverseLayout(true);
-        //layoutManager.setStackFromEnd(true);
-
         recycler.setAdapter(rAdapter);
-        Log.d("tag","totalitems"+totalItems);
-        Toast.makeText(MainActivity.this, "page"+pageCount, Toast.LENGTH_SHORT).show();
         pageCount++;
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -164,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
                                       && pastVisibleItems >= 0) {
 
                                   getNextListItems();
-                                  Toast.makeText(MainActivity.this, "page"+pageCount, Toast.LENGTH_SHORT).show();
                                   pageCount++;
 
 
@@ -180,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getNextListItems() {
-
         startLimit = endLimit;
         endLimit = endLimit+increment;
         if(endLimit>= totalItems){
@@ -189,16 +158,14 @@ public class MainActivity extends AppCompatActivity {
             endLimit=endLimit+(totalItems%increment);
 
         }
-
         callDetailsList.addAll(new DatabaseManager(this).getFiveItems(startLimit,endLimit));
         rAdapter.notifyDataSetChanged();
     }
 
-
     private boolean checkPermission()
     {
         int i=0;
-        String[] perm={Manifest.permission.READ_PHONE_STATE,Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_CONTACTS};
+        String[] perm={Manifest.permission.READ_PHONE_STATE,Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_CONTACTS,Manifest.permission.CALL_PHONE};
         List<String> reqPerm=new ArrayList<>();
         for(String permis:perm) {
             int resultPhone = ContextCompat.checkSelfPermission(MainActivity.this,permis);
@@ -208,18 +175,14 @@ public class MainActivity extends AppCompatActivity {
                 reqPerm.add(permis);
             }
         }
-
         if(i==5)
             return true;
         else
             return requestPermission(reqPerm);
     }
 
-
-
     private boolean requestPermission(List<String> perm)
     {
-
         String[] listReq=new String[perm.size()];
         listReq=perm.toArray(listReq);
         for(String permissions:listReq) {
@@ -245,4 +208,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+   
 }

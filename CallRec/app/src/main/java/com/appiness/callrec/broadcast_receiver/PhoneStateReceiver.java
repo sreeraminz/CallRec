@@ -1,4 +1,4 @@
-package com.appiness.callrec;
+package com.appiness.callrec.broadcast_receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +7,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
+
+import com.appiness.callrec.Database.DatabaseManager;
+import com.appiness.callrec.services.RecordingService;
+import com.appiness.callrec.services.UploadingService;
+import com.appiness.callrec.utilities.CallDetails;
+import com.appiness.callrec.utilities.CommonMethods;
+
+import java.time.Duration;
 import java.util.List;
 
 public class PhoneStateReceiver  extends BroadcastReceiver {
@@ -15,6 +24,7 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
     static Boolean recordStarted;
     public static String phoneNumber;
     public static String name;
+    static long start_time, end_time;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -34,6 +44,9 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
 
                         }
                         else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+
+                        start_time = System.currentTimeMillis();
+
                         int j = pref.getInt("numOfCalls", 0);
                         pref.edit().putInt("numOfCalls", ++j).apply();
 
@@ -62,6 +75,16 @@ public class PhoneStateReceiver  extends BroadcastReceiver {
                         int k = pref.getInt("numOfCalls", 1);
                         pref.edit().putInt("numOfCalls", --k).apply();
                         int l = pref.getInt("numOfCalls", 0);
+
+                        end_time = System.currentTimeMillis();
+                        long total_time = end_time - start_time;
+
+
+                        String totalTime = Long.toString(total_time);
+                        pref.edit().putLong("duration", total_time);
+
+                        Log.d("Tag","DURATION REC==" +end_time);
+
                         recordStarted = pref.getBoolean("recordStarted", false);
                         if (recordStarted && l == 0) {
                             context.stopService(new Intent(context, RecordingService.class));

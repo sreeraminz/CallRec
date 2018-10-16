@@ -1,19 +1,19 @@
-package com.appiness.callrec;
+package com.appiness.callrec.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+
+import com.appiness.callrec.utilities.CallDetails;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.appiness.callrec.DatabaseHandler.DATE;
-import static com.appiness.callrec.DatabaseHandler.PHONE_NUMBER;
-import static com.appiness.callrec.DatabaseHandler.SERIAL_NUMBER;
-import static com.appiness.callrec.DatabaseHandler.TABLE_RECORD;
-import static com.appiness.callrec.DatabaseHandler.TIME;
+import static com.appiness.callrec.Database.DatabaseHandler.PHONE_NUMBER;
+import static com.appiness.callrec.Database.DatabaseHandler.SERIAL_NUMBER;
+import static com.appiness.callrec.Database.DatabaseHandler.TABLE_RECORD;
+import static com.appiness.callrec.Database.DatabaseHandler.TIME;
 
 public class DatabaseManager {
 
@@ -37,9 +37,6 @@ public class DatabaseManager {
         public List<CallDetails> getAllDetails() {
             List<CallDetails> recordList = new ArrayList<>();
             String selectQuery = "SELECT * FROM " + TABLE_RECORD;
-            // String selectQuery = "SELECT * FROM  "+TABLE_RECORD+" ORDER BY "+SERIAL_NUMBER+" DESC";
-            //Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_RECORD +  " ORDER BY " + DATE + " ASC", null);
-
             Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
 
             if (cursor.moveToFirst()) {
@@ -61,9 +58,6 @@ public class DatabaseManager {
         public List<CallDetails> getFiveItems(int startLimit, int endLimit){
             List<CallDetails> recordList = new ArrayList<>();
             String selectQuery = "SELECT * FROM " + TABLE_RECORD+ " where ("+SERIAL_NUMBER+" BETWEEN "+startLimit+ " AND "+endLimit+" )";
-           // String selectQuery = "SELECT * FROM " + TABLE_RECORD+ " where ("+SERIAL_NUMBER+" BETWEEN "+startLimit+ " AND "+endLimit+" ) ORDER BY + "+DATE+ " DESC";
-            //String selectQuery = "SELECT * FROM " + TABLE_RECORD+ " where ("+SERIAL_NUMBER+" BETWEEN "+startLimit+ " AND "+endLimit+" ) ORDER BY "+SERIAL_NUMBER+ " DESC";
-
             Cursor cursor = sqLiteDatabase.rawQuery(selectQuery, null);
 
             if (cursor.moveToFirst()) {

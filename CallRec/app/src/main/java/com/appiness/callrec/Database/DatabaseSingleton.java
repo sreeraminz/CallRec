@@ -1,7 +1,9 @@
-package com.appiness.callrec;
+package com.appiness.callrec.Database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.appiness.callrec.Database.DatabaseHandler;
 
 
 public class DatabaseSingleton {

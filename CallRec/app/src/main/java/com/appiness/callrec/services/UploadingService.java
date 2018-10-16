@@ -1,4 +1,4 @@
-package com.appiness.callrec;
+package com.appiness.callrec.services;
 
 import android.app.Service;
 import android.content.Context;
@@ -10,13 +10,16 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.appiness.callrec.Database.DatabaseManager;
+import com.appiness.callrec.utilities.CommonMethods;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.File;
-import static com.appiness.callrec.PhoneStateReceiver.phoneNumber;
+import static com.appiness.callrec.broadcast_receiver.PhoneStateReceiver.phoneNumber;
 
 
 public class UploadingService extends Service {

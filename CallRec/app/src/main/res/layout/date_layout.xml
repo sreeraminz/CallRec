@@ -4,21 +4,24 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="50dp">
+    android:layout_margin="5dp">
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+
         app:cardBackgroundColor="@color/colorPrimaryDark">
+
         <TextView
             android:id="@+id/date1"
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="7dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 
 
@@ -26,13 +29,15 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/cardView"
         android:padding="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        >
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:id="@+id/dateRelative"
             android:padding="7dp">
 
             <TextView
@@ -49,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/name1"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="20dp"/>
 
             <TextView
                 android:id="@+id/time1"
@@ -58,10 +63,33 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/name1"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp" />
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                android:layout_alignParentRight="true"
+                android:layout_above="@id/time1"/>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="22dp"
+                android:src="@drawable/ic_call_black_24dp"
+                />
 
         </RelativeLayout>
-
+        <ImageView
+            android:id="@+id/btnCall"
+            android:background="@drawable/circle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:layout_margin="7dp"
+            android:layout_gravity="end"
+            android:onClick="onClickCall"
+            android:src="@drawable/ic_call_black_24dp"
+            android:text="CALL" />
     </android.support.v7.widget.CardView>
-
 </LinearLayout>

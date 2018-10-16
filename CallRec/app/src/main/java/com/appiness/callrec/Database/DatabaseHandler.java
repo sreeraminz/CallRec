@@ -1,4 +1,4 @@
-package com.appiness.callrec;
+package com.appiness.callrec.Database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
